@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import './App.css';
 import firebase from 'firebase/app'
 import 'firebase/firestore'
@@ -20,15 +20,19 @@ firebase.initializeApp(firebaseConfig)
 
 
 const auth = firebase.auth()
+// eslint-disable-next-line
 const firestore = firebase.firestore()
 
 
 function App() {
   
-  const list = [{ id: 1, text: "todo item"}, { id: 2, text: "todo-list-454d2" }, { id: 3, text:"todo"}]
   const [user] = useAuthState(auth)
-
+  
+  const list = [{ id: 1, text: "todo item"}, { id: 2, text: "todo-list-454d2" }, { id: 3, text:"todo"}]
   const [mockList, setMockList] = useState([])
+  const inputUser = useRef("222")
+  const [newItem, setNewItem] = useState({id: null, text: ""})
+  
   
   const ChargeItems = _ => {
 
@@ -74,19 +78,44 @@ function App() {
     )
   }
 
-  
+  const AddItem = _ => {
+    // nos quedamos aca estoy obtenienodo el id y el texto nuevo pero no los agrega a la lista, sigo por este lado o directamente conecto a firebase??
+
+    
+    function addNewItem () {
+      const text = inputUser.current.value
+      console.log(text)
+      const newId = mockList.length ? mockList.length +1  : 1
+      console.log(newId)
+      setNewItem({ id: newId, text: text})
+      console.log(newItem)
+      let newMockList  = [newItem, ...mockList]
+      setMockList(newMockList)
+      setNewItem({ id: null, text: ""})
+    }
+    
+    return (
+      <>
+        <input  type="text" ref={inputUser} ></input>
+        <button onClick={addNewItem} >Agregar!</button>
+      </>
+
+    )
+
+  }
 
 
   return (  
     <>
-    <header >
-      <h1> TODO LIST</h1>
-      {!user ? <SignIn /> : <SignOut />}
-    </header>
-    <section>
-      <ChargeItems />
-      {mockList.length > 0 ? <DisplayItems /> : <h1>no hay items</h1> }  
-    </section>
+      <header >
+        <h1> TODO LIST</h1>
+        {!user ? <SignIn /> : <SignOut />}
+      </header>
+      <section>
+        <ChargeItems />
+        <AddItem />
+        {mockList.length > 0 ? <DisplayItems /> : <h1>no hay items</h1> }  
+      </section>
     </>
   );
 }

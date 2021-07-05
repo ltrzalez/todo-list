@@ -1,3 +1,4 @@
+import React, { useState } from 'react'
 import './App.css';
 import firebase from 'firebase/app'
 import 'firebase/firestore'
@@ -22,10 +23,40 @@ const auth = firebase.auth()
 const firestore = firebase.firestore()
 
 
-
 function App() {
-
+  
+  const list = [{ id: 1, text: "todo item"}, { id: 2, text: "todo-list-454d2" }, { id: 3, text:"todo"}]
   const [user] = useAuthState(auth)
+
+  const [mockList, setMockList] = useState([])
+  
+  const ChargeItems = _ => {
+
+    function doMyThing(){
+      setMockList(list)
+    } 
+
+    return (
+      <>
+        <button onClick={doMyThing}>carga datos</button>
+      </>
+    )
+  }
+
+
+  const DisplayItems = _=>{
+    return (
+      <>
+        {mockList.map(item => {
+          const {id, text} = item
+          return (
+            <p key={id} >{text}</p>
+          )
+        })}
+      </>
+    )
+  }
+
 
   function SignIn() {
     const signInWithGoogle = _ => {
@@ -33,7 +64,7 @@ function App() {
       auth.signInWithPopup(provider)
     }
     return (
-      <button onClick={signInWithGoogle}>click me</button>
+      <button onClick={signInWithGoogle}>Login</button>
     )
   }
 
@@ -43,14 +74,20 @@ function App() {
     )
   }
 
+  
 
-  return (
-    <div >
-      <header >
-        <h1> TODO LIST</h1>
-        {!user ? <SignIn /> : <SignOut />}
-      </header>
-    </div>
+
+  return (  
+    <>
+    <header >
+      <h1> TODO LIST</h1>
+      {!user ? <SignIn /> : <SignOut />}
+    </header>
+    <section>
+      <ChargeItems />
+      {mockList.length > 0 ? <DisplayItems /> : <h1>no hay items</h1> }  
+    </section>
+    </>
   );
 }
 

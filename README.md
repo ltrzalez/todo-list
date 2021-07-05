@@ -10,6 +10,6 @@ making a todo list app with react and firebase
 
 Everybody need sing in to access to private todo list.
 
-# some reminders for me to achiave the goal
+# some reminders for me to achieve  the goal
 
 CRUD of todo tickets, conditional rendering wiht In/out permission
